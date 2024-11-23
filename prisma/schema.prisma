@@ -6,15 +6,29 @@ generator client {
 }
 
 datasource db {
-    provider = "mysql"
+    provider = "postgresql"
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+model User {
+    id String @id @db.Uuid
+    email String @db.VarChar(255)
+    identities Identity[]
+    profiles Profile[]
+}
 
-    @@index([name])
+model Identity {
+    id Int @id @default(autoincrement())
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String @db.Uuid
+    displayName String
+    userName String
+}
+
+model Profile {
+    id Int @id @default(autoincrement())
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId String @db.Uuid
+    title String
+    content String
 }
