@@ -11,6 +11,6 @@ export default function Page() {
     }, [])
     return <div>
         <h1>Supabase Auth</h1>
-        {supabase && <Auth supabaseClient={supabase} providers={["github", "discord"]} onlyThirdPartyProviders={true} redirectTo="http://localhost:3000/auth/callback"/>}
+        {supabase && <Auth supabaseClient={supabase} providers={["github", "discord"]} onlyThirdPartyProviders={false} redirectTo="http://localhost:3000/auth/callback"/>}
     </div>
 }

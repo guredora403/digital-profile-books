@@ -12,9 +12,11 @@ datasource db {
 
 model User {
     id String @id @db.Uuid
-    email String @db.VarChar(255)
     identities Identity[]
     profiles Profile[]
+    outgoingEdges EdgedUser[] @relation("source_user_to_edges")
+    incomingEdges EdgedUser[] @relation("target_user_to_edges")
+    @@map("users")
 }
 
 model Identity {
@@ -22,7 +24,9 @@ model Identity {
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId String @db.Uuid
     displayName String
-    userName String
+    userName String @unique
+    incomingEdges EdgedUser[]
+    @@map("identities")
 }
 
 model Profile {
@@ -31,4 +35,18 @@ model Profile {
     userId String @db.Uuid
     title String
     content String
+    @@map("profiles")
+}
+
+model EdgedUser {
+    id Int @id @default(autoincrement())
+    source User @relation("source_user_to_edges", fields: [sourceId], references: [id], onDelete: Cascade)
+    sourceId String @db.Uuid
+    targetUser User @relation(name: "target_user_to_edges", fields: [targetUserId], references: [id], onDelete: Cascade)
+    targetUserId String @db.Uuid
+    targetIdentity Identity @relation(fields: [targetIdentityId], references: [id], onDelete: Cascade)
+    targetIdentityId Int
+    createdAt DateTime @default(now()) @map("created_at")
+    @@map("edged_identities")
+    @@unique([sourceId, targetUserId])
 }

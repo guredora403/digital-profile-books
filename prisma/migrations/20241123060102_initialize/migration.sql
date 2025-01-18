@@ -1,13 +1,12 @@
 -- CreateTable
-CREATE TABLE "User" (
+CREATE TABLE users (
     "id" UUID NOT NULL,
-    "email" VARCHAR(255) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "Identity" (
+CREATE TABLE identities (
     "id" SERIAL NOT NULL,
     "userId" UUID NOT NULL,
     "displayName" TEXT NOT NULL,
@@ -17,7 +16,7 @@ CREATE TABLE "Identity" (
 );
 
 -- CreateTable
-CREATE TABLE "Profile" (
+CREATE TABLE profiles (
     "id" SERIAL NOT NULL,
     "userId" UUID NOT NULL,
     "title" TEXT NOT NULL,
@@ -27,7 +26,7 @@ CREATE TABLE "Profile" (
 );
 
 -- AddForeignKey
-ALTER TABLE "Identity" ADD CONSTRAINT "Identity_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "identities" ADD CONSTRAINT "Identity_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Profile" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "profiles" ADD CONSTRAINT "Profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
