@@ -1,7 +1,8 @@
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 import { meRouter } from "./routers/meRouter";
-import { userNameRouter } from "./routers/userNameRouter";
-import { identityRouter } from "./routers/identityRouter";
+import { cardRouter } from "./routers/CardRouter";
+import { publicProcedure } from "~/server/api/trpc";
+import { env } from "~/env";
 
 /**
  * This is the primary router for your server.
@@ -10,8 +11,10 @@ import { identityRouter } from "./routers/identityRouter";
  */
 export const appRouter = createTRPCRouter({
   me: meRouter,
-  userName: userNameRouter,
-  identity: identityRouter,
+  card: cardRouter,
+  isDev: publicProcedure.query(async () => {
+    return env.NODE_ENV === "development";
+  }),
 });
 
 // export type definition of API

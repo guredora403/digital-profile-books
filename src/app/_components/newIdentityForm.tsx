@@ -1,19 +1,16 @@
 "use client";
 import { useForm} from "react-hook-form";
 import { Form, Button } from "react-aria-components";
-import { Identity, IdentitySchema} from "~/models/identity";
+import { CardHandle, CardHandleSchema} from "~/models/card";
 import { TextField } from "./controlls/TextField";
 import { api } from "~/trpc/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { TRPCClientError } from "@trpc/client";
 
-const isUserNameAvailable = async (userName: String) => {
-  console.log("isUserNameAvailable", userName);
-  return true
-}
 
 export function NewIdentityForm() {
-  const {data, isPending, mutate} = api.me.identity.new.useMutation();
+  const {data, isPending, mutate} = api.me.cardHandle.new.useMutation();
   const util = api.useUtils();
   const router = useRouter();
   const {
@@ -22,30 +19,21 @@ export function NewIdentityForm() {
     formState: { isValid, errors },
     setError,
     clearErrors
-  } = useForm<Identity>({
+  } = useForm<CardHandle>({
     mode: "onBlur",
-    resolver: zodResolver(IdentitySchema.extend({
-      userName: IdentitySchema.shape.userName.refine(async (userName) => {
-        try {
-          const result = await util.userName.isAvailable.fetch(userName);
-          return result.isAvailable;
-        } catch (error) {
-          console.log(error);
-          return false;
-        }
-      }, { message: "ユーザー名は既に使用されています。"})
-    })),
+    resolver: zodResolver(CardHandleSchema),
     defaultValues: {
       displayName: "",
-      userName: ""
+      handleName: ""
     }
   });
 
-  const onSubmit = (data: Identity) => {
+  const onSubmit = (data: CardHandle) => {
     mutate(data, {
       onSuccess: () => {
         console.log("success");
-        router.push("/identity");
+        void util.invalidate();
+        router.push("/cardhandle");
       },
       onError: (error) => {
         console.log("error", error);
@@ -55,7 +43,7 @@ export function NewIdentityForm() {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <TextField name="displayName" control={control} label="表示名(*)"/>
-      <TextField name="userName" control={control} label="ユーザー名(*)"/>
+      <TextField name="handleName" control={control} label="ID(*)(半角英数字)"/>
       <Button type="submit" isDisabled={!isValid || isPending}>
         登録
       </Button>

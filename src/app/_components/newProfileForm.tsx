@@ -30,6 +30,7 @@ export function NewProfileForm() {
     mutate(data, {
       onSuccess: () => {
         console.log("success");
+        void util.me.profile.all.invalidate();
         router.push("/profile");
       },
       onError: (error) => {

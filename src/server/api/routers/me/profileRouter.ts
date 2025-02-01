@@ -28,7 +28,7 @@ export const profileRouter = createTRPCRouter({
                 data: {
                     title: input.title,
                     content: input.content,
-                    userId: user.id
+                    ownerId: user.id
                 }
             })
             return newProfile

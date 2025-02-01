@@ -1,42 +1,42 @@
 import { z } from "zod";
 import { createTRPCRouter, authorizedProcedure } from "../../trpc";
 import { TRPCError } from "@trpc/server";
-import { IdentitySchema, IdentityWithUniqueUserNameSchema } from "~/models/identity";
+import { CardHandleSchema } from "~/models/card";
 
-export const identityRouter = createTRPCRouter({
+export const cardHandleRouter = createTRPCRouter({
     all: authorizedProcedure.query(async ({ ctx: { db, user } }) => {
         const myData = await db.user.findUnique({
             where: {
                 id: user.id
             },
             include: {
-                identities:true
+                cardHandles:true
             }
         })
         if(!myData) {
             throw new TRPCError({code: "FORBIDDEN", message: "user not found"})
         }
-        return myData.identities
+        return myData.cardHandles
     }),
     new: authorizedProcedure
-        .input(IdentityWithUniqueUserNameSchema)
+        .input(CardHandleSchema)
         .mutation(async ({ input, ctx: { db, user } }) => {
-            const newIdentity = await db.identity.create({
+            const newCardHandle = await db.cardHandle.create({
                 data: {
                     displayName: input.displayName,
-                    userName: input.userName,
-                    userId: user.id
+                    handleName: input.handleName,
+                    ownerId: user.id
                 }
             })
-            return newIdentity
+            return newCardHandle
         }),
     delete: authorizedProcedure
         .input(z.object({id: z.number()}))
         .mutation(async ({ input, ctx: { db, user } }) => {
-            const deleteUser = await db.identity.delete({
+            const deleteUser = await db.cardHandle.delete({
                 where: {
                     id: input.id,
-                    userId: user.id
+                    ownerId: user.id
                 }
             })
             return true

@@ -1,4 +1,4 @@
-import { ProfileResponse } from "~/models/profile";
+import { type ProfileResponse } from "~/models/profile";
 
 export function ProfileView({ profiles }: { profiles: ProfileResponse[] }) {
     return <>

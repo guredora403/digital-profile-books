@@ -1,9 +1,10 @@
 import "~/styles/globals.css";
-
+import UserMenu from "./_components/UserMenu";
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: {
@@ -21,6 +22,16 @@ export default function RootLayout({
     <html lang="ja" className={`${GeistSans.variable}`}>
       <body>
         <TRPCReactProvider>
+          <p>
+            <Link href="/profile">自己紹介管理</Link>
+          </p>
+          <p>
+            <Link href="/cardhandle">ID管理</Link>
+          </p>
+          <p>
+            <Link href="/cardbooks">名刺帳</Link>
+          </p>
+          <UserMenu/>
           {children}
           <footer>powered by T3Stack and supabase</footer>
         </TRPCReactProvider>

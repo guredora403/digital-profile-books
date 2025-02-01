@@ -1,8 +1,10 @@
 import { createTRPCRouter } from "../trpc";
-import { identityRouter } from "./me/identityRouter";
+import { cardBookRouter } from "./me/cardBookRouter";
+import { cardHandleRouter } from "./me/cardHandleRouter";
 import { profileRouter } from "./me/profileRouter";
 
 export const meRouter = createTRPCRouter({
-    identity: identityRouter,
-    profile: profileRouter
+    cardHandle: cardHandleRouter,
+    profile: profileRouter,
+    cardbooks: cardBookRouter
 })

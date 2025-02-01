@@ -12,41 +12,38 @@ datasource db {
 
 model User {
     id String @id @db.Uuid
-    identities Identity[]
+    cardHandles CardHandle[]
     profiles Profile[]
-    outgoingEdges EdgedUser[] @relation("source_user_to_edges")
-    incomingEdges EdgedUser[] @relation("target_user_to_edges")
+    cardBookRecords CardBookEntry[] @relation("record_owner_ref")
     @@map("users")
 }
 
-model Identity {
+model CardHandle {
     id Int @id @default(autoincrement())
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId String @db.Uuid
+    owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    ownerId String @db.Uuid @map("ownerId")
     displayName String
-    userName String @unique
-    incomingEdges EdgedUser[]
-    @@map("identities")
+    handleName String @unique @map("handleName")
+    registeredCardBookEntries CardBookEntry[]
+    @@map("card_handles")
 }
 
 model Profile {
     id Int @id @default(autoincrement())
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId String @db.Uuid
+    owner User @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+    ownerId String @db.Uuid
     title String
     content String
     @@map("profiles")
 }
 
-model EdgedUser {
+model CardBookEntry {
     id Int @id @default(autoincrement())
-    source User @relation("source_user_to_edges", fields: [sourceId], references: [id], onDelete: Cascade)
-    sourceId String @db.Uuid
-    targetUser User @relation(name: "target_user_to_edges", fields: [targetUserId], references: [id], onDelete: Cascade)
-    targetUserId String @db.Uuid
-    targetIdentity Identity @relation(fields: [targetIdentityId], references: [id], onDelete: Cascade)
-    targetIdentityId Int
+    owner User @relation("record_owner_ref", fields: [ownerId], references: [id], onDelete: Cascade)
+    ownerId String @db.Uuid @map("ownerId")
+    card CardHandle @relation(fields: [cardHandleId], references: [id], onDelete: Cascade)
+    cardHandleId Int @map("cardHandleId")
     createdAt DateTime @default(now()) @map("created_at")
-    @@map("edged_identities")
-    @@unique([sourceId, targetUserId])
+    @@map("card_book_entries")
+    @@unique([ownerId, cardHandleId])
 }
