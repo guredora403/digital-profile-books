@@ -34,7 +34,7 @@ RUN npx prisma generate
 COPY . .
 
 # Build application
-RUN npx next build --experimental-build-mode compile
+RUN SKIP_ENV_VALIDATION=1 npx next build --experimental-build-mode compile 
 
 # Remove development dependencies
 RUN yarn install --production=true
@@ -49,13 +49,11 @@ RUN apt-get update -qq && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built application
-COPY --from=build /app/.next/standalone /app
-COPY --from=build /app/.next/static /app/.next/static
-COPY --from=build /app/public /app/public
+copy --from=build /app /app
 
 # Entrypoint prepares the database.
 ENTRYPOINT [ "/app/docker-entrypoint.js" ]
 
 # Start the server by default, this can be overwritten at runtime
 EXPOSE 3000
-CMD [ "node", "server.js" ]
+CMD [ "yarn", "run", "start" ]

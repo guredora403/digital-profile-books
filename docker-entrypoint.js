@@ -5,10 +5,11 @@ import { spawn } from 'node:child_process'
 const env = { ...process.env }
 
 // If running the web server then prerender pages
+/*
 if (process.argv.slice(-3).join(' ') === 'yarn run start') {
-  await exec('npx next build --experimental-build-mode generate')
+  await exec('yarn run next build --experimental-build-mode generate')
 }
-
+*/
 // launch application
 await exec(process.argv.slice(2).join(' '))
 
